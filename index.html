@@ -109,6 +109,10 @@ justify-content:center;
 .section{display:none;margin-top:20px;}
 .active{display:block;}
 
+#noBtn{
+  position:relative;
+}
+
 .pic{
 width:90px;
 height:90px;
@@ -193,6 +197,19 @@ to{transform:scale(1);opacity:1;}
 <img src="Images/aisyah3.jpg" class="pic">
 <br><br>
 <button onclick="aisyahMode()"> Click Me Many Times😌 </button>
+</div>
+
+<div id="secret" class="section">
+  <button onclick="showSecret()"> Something Special 💌</button>
+  <p id="secretText" style="margin-top:10px;"></p>
+
+  <br><br>
+
+  <h2> Do You like it ? 😌💖</h2>
+
+  <button onclick="yesClicked()">Yes ❤️</button>
+
+  <button id="noBtn" onmouseover="moveNo()">No 😏</button>
 </div>
 
 <div id="secret" class="section">
@@ -337,6 +354,21 @@ setTimeout(()=>h.remove(),6000);
 
 function closeLetter(){
 document.getElementById("letterBox").style.display="none";
+}
+
+function moveNo(){
+  const btn = document.getElementById("noBtn");
+
+  const x = Math.random() * window.innerWidth;
+  const y = Math.random() * window.innerHeight;
+
+  btn.style.position = "fixed";
+  btn.style.left = x + "px";
+  btn.style.top = y + "px";
+}
+
+function yesClicked(){
+  alert("I knew it 😏❤️");
 }
 
 </script>
