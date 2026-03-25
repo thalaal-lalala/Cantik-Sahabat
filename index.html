@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Cantik Sahabat 💖</title>
+<title>Cantik Sahabat 💖</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
@@ -12,390 +12,326 @@
 
 body{
 height:100vh;
-background:url("gif/hug.gif") center/cover no-repeat;
-background-size: contain;
-background-attachment:fixed;
+background:black;
 display:flex;
 justify-content:center;
 align-items:center;
 overflow:hidden;
-position:relative;
 }
 
-body::before{
-content:"";
-position:absolute;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.5);
+/* PARTICLE CANVAS */
+canvas{
+position:fixed;
+top:0;
+left:0;
 z-index:0;
 }
 
-/* floating hearts */
-.float-heart{
-position:absolute;
-font-size:18px;
-color:#ff4d6d;
-animation:floatUp 6s linear infinite;
-opacity:0.6;
-z-index:1;
-}
-
-@keyframes floatUp{
-from{transform:translateY(100vh);}
-to{transform:translateY(-10vh);}
-}
-
-/* intro */
-#intro{
-position:absolute;
-width:100%;
-height:100%;
-background:black;
-color:white;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-z-index:50;
-text-align:center;
-}
-
-#enterBtn{
-padding:12px 22px;
-border:none;
-border-radius:25px;
-background:#ff4d6d;
-color:white;
-cursor:pointer;
-display:none;
-}
-
-/* app */
+/* GLASS UI */
 .app{
 width:380px;
-background:rgba(255,255,255,0.93);
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(20px);
 border-radius:30px;
 padding:25px;
 text-align:center;
 z-index:10;
 position:relative;
-box-shadow:0 20px 40px rgba(0,0,0,0.4);
+box-shadow:0 0 40px rgba(255,77,109,0.4);
+border:1px solid rgba(255,255,255,0.2);
+transition:0.2s;
+animation:glow 2s infinite alternate;
 }
 
-/* buttons */
+@keyframes glow{
+from{box-shadow:0 0 20px #ff4d6d;}
+to{box-shadow:0 0 50px #ff85a2;}
+}
+
+/* SECTIONS */
+.section{
+display:none;
+opacity:0;
+transform:scale(0.8);
+transition:0.4s;
+}
+
+.active{
+display:block;
+opacity:1;
+transform:scale(1);
+}
+
+/* BUTTONS */
 button{
 background:linear-gradient(45deg,#ff4d6d,#ff85a2);
 border:none;
 color:white;
-padding:8px 14px;
+padding:10px 16px;
 border-radius:20px;
 cursor:pointer;
-transition:0.3s;
+margin:5px;
 }
 
 button:hover{
-transform:scale(1.1);
-box-shadow:0 0 12px #ff4d6d;
+transform:scale(1.15);
+box-shadow:0 0 20px #ff4d6d;
 }
 
-.tabs{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-justify-content:center;
-}
-
-.section{display:none;margin-top:20px;}
-.active{display:block;}
-
-#noBtn{
-  position:relative;
-}
-
+/* IMAGES */
 .pic{
 width:90px;
 height:90px;
 object-fit:cover;
 border-radius:15px;
 margin:5px;
+transition:0.3s;
 }
 
-/* game */
-#target img{
-width:65px;
-height:65px;
-border-radius:50%;
-object-fit:cover;
+.pic:hover{
+transform:scale(1.3);
+}
+
+/* MEMORY */
+#memoryGrid{
+display:grid;
+grid-template-columns:repeat(4,60px);
+gap:10px;
+justify-content:center;
+}
+
+.card{
+width:60px;
+height:60px;
+background:#ff4d6d;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:10px;
 cursor:pointer;
 }
 
-/* FULL HEART */
-.bigHeart{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+/* VISUALIZER */
+#visualizer{
 display:flex;
+gap:3px;
 justify-content:center;
-align-items:center;
-font-size:220px;
-color:#ff4d6d;
-background:rgba(0,0,0,0.5);
-z-index:9999;
-animation:pop 0.6s ease;
+margin-top:10px;
 }
 
-@keyframes pop{
-from{transform:scale(0.5);opacity:0;}
-to{transform:scale(1);opacity:1;}
+.bar{
+width:4px;
+height:20px;
+background:#ff4d6d;
+animation:beat 0.5s infinite alternate;
 }
 
+@keyframes beat{
+from{height:10px;}
+to{height:30px;}
+}
+
+/* PLAYER */
+#player{
+position:absolute;
+font-size:30px;
+top:200px;
+left:150px;
+}
 </style>
 </head>
 
 <body>
 
-<audio id="heartSound" src="music/pop.mp3"></audio>
-<audio id="bgMusic" src="song/fixyou.mp3"></audio>
-
-<div id="intro">
-<h1 id="introText"></h1>
-<button id="enterBtn" onclick="startApp()"> Shall we Start 😌</button>
-</div>
+<canvas id="bg"></canvas>
 
 <div class="app">
 
 <h1>Aisyah 💖</h1>
 
-<div class="tabs">
-<button onclick="show('home')"> Let's Start 🤍</button>
-<button onclick="show('reasons')"> Why You're Amazing 💖</button>
-<button onclick="show('game')"> Catch Me If You Can 😏 </button>
-<button onclick="show('gallery')"> My Favorite Human Being 😌</button>
-<button onclick="show('secret')">Something For You 💌</button>
+<div>
+<button onclick="show('home')">Home</button>
+<button onclick="show('gallery')">Gallery</button>
+<button onclick="show('memory')">Memory 🧠</button>
+<button onclick="show('speed')">Speed ⚡</button>
+<button onclick="show('dodge')">Dodge 🏃</button>
+<button onclick="show('flappy')">Flappy 🐤</button>
+<button onclick="show('secret')">Secret 💌</button>
 </div>
 
 <div id="home" class="section active">
-<p>You’re not just important… you’re someone I genuinely care about ❤️</p>
-</div>
-
-<div id="reasons" class="section">
-<p id="reasonText"> See why 😌💖</p>
-<button onclick="newReason()"> Let's Go Through 😏</button>
-</div>
-
-<div id="game" class="section">
-<div id="target"></div>
-<h3 id="score">0</h3>
+<p>You matter ❤️</p>
 </div>
 
 <div id="gallery" class="section">
 <img src="Images/aisyah1.jpg" class="pic">
 <img src="Images/aisyah2.jpg" class="pic">
 <img src="Images/aisyah3.jpg" class="pic">
-<br><br>
-<button onclick="aisyahMode()"> Click Me Many Times😌 </button>
+</div>
+
+<div id="memory" class="section">
+<h3>Memory Game</h3>
+<div id="memoryGrid"></div>
+</div>
+
+<div id="speed" class="section">
+<button onclick="startSpeed()">Start</button>
+<h3 id="speedScore">0</h3>
+</div>
+
+<div id="dodge" class="section">
+<div id="player">😌</div>
+</div>
+
+<div id="flappy" class="section">
+<canvas id="gameCanvas" width="300" height="400"></canvas>
 </div>
 
 <div id="secret" class="section">
-  <button onclick="showSecret()"> Something Special 💌</button>
-  <p id="secretText" style="margin-top:10px;"></p>
-
-  <br><br>
-
-  <h2> Do You like it ? 😌💖</h2>
-
-  <button onclick="yesClicked()">Yes ❤️</button>
-
-  <button id="noBtn" onmouseover="moveNo()">No 😏</button>
+<h2>Will you be mine 😏</h2>
+<button onclick="yesClicked()">Yes ❤️</button>
+<button id="noBtn" onmouseover="moveNo()">No 😈</button>
 </div>
 
-<div id="secret" class="section">
-<button onclick="showSecret()"> Something Special 💌</button>
-<p id="secretText" style="margin-top:10px;"></p>
-</div>
+<div id="visualizer"></div>
 
 </div>
 
 <script>
 
-/* INTRO */
-const msg="I made this for you… not because I had to, but because you deserve something like this ❤️";
-let i=0;
-function typeIntro(){
-if(i<msg.length){
-document.getElementById("introText").innerHTML+=msg[i];
-i++;
-setTimeout(typeIntro,40);
-}else{
-document.getElementById("enterBtn").style.display="block";
-}}
-typeIntro();
+/* PARTICLES */
+const canvas=document.getElementById("bg");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-function startApp(){
-
-document.getElementById("intro").style.display="none";
-
-const music = document.getElementById("bgMusic");
-
-music.loop = true;
-music.volume = 0.5;
-music.play();
-
+let particles=[];
+for(let i=0;i<80;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+dx:(Math.random()-0.5)*1,
+dy:(Math.random()-0.5)*1
+});
 }
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach(p=>{
+p.x+=p.dx;
+p.y+=p.dy;
+if(p.x<0||p.x>canvas.width)p.dx*=-1;
+if(p.y<0||p.y>canvas.height)p.dy*=-1;
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,2,0,Math.PI*2);
+ctx.fillStyle="#ff4d6d";
+ctx.fill();
+});
+requestAnimationFrame(animate);
+}
+animate();
 
 /* NAV */
 function show(id){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById(id).classList.add("active");
+if(id==="memory") startMemory();
 }
 
-/* 💖 LONG EMOTIONAL REASONS */
-let reasons=[
-"You’ve been through things that most people would never even understand, yet somehow you’re still here, still standing, still pushing forward… and that alone says so much about how strong you really are.",
-"Even when life gets heavy and things don’t go your way, you don’t give up… you keep going, and that kind of strength is something not everyone has.",
-"You have this quiet strength about you… the kind that doesn’t need to be loud, but you can feel it just by knowing you.",
-"You’ve faced things that could’ve made you cold or distant, but instead you stayed kind, and that’s something I genuinely admire.",
-"You don’t even realize how much you inspire people just by being yourself, by getting through things and still choosing to smile.",
-"You deserve so much happiness, so much peace, and so much love… especially after everything you’ve been through.",
-"You’re not just strong… you’re resilient, and there’s a difference. You don’t just survive, you keep moving forward.",
-"And honestly… I really respect you more than you probably think ❤️"
-];
+/* MEMORY */
+const emojis=["💖","💖","✨","✨","😌","😌","🔥","🔥"];
+let opened=[];
 
-let index=0;
-function newReason(){
-if(index>=reasons.length){
-document.getElementById("reasonText").innerText="And there’s still so much more I could say about you ❤️";
-return;
+function startMemory(){
+const grid=document.getElementById("memoryGrid");
+grid.innerHTML="";
+emojis.sort(()=>Math.random()-0.5);
+
+emojis.forEach(e=>{
+const card=document.createElement("div");
+card.className="card";
+card.innerText="?";
+
+card.onclick=()=>{
+card.innerText=e;
+opened.push({card,e});
+
+if(opened.length===2){
+if(opened[0].e!==opened[1].e){
+setTimeout(()=>{
+opened.forEach(o=>o.card.innerText="?");
+opened=[];
+},500);
+}else opened=[];
 }
-document.getElementById("reasonText").innerText=reasons[index++];
-}
-
-function showSecret(){
-
-document.getElementById("letterContent").innerText =
-"My Sahabat ❤️\n\n" +
-"I know life hasn’t always been easy for you… and I’ve seen how much you’ve had to carry on your own.\n\n" +
-"But even after everything, you’re still here… still strong, still kind, still trying — and that honestly amazes me.\n\n" +
-"You have this quiet strength in you that most people don’t even understand. The way you keep going, even when it hurts, says so much about who you are.\n\n" +
-"You deserve peace, happiness, and all the good things this world can offer.\n\n" +
-"And I just want you to know… you matter more than you think, and I’m really, really glad you’re here ❤️";
-document.getElementById("letterBox").style.display="block";
-
-}
-
-/* GAME */
-let score=0;
-const target=document.getElementById("target");
-
-function spawnTarget(){
-target.innerHTML="";
-const pics=["Images/aisyah1.jpg","Images/aisyah2.jpg","Images/aisyah3.jpg"];
-const img=document.createElement("img");
-img.src=pics[Math.floor(Math.random()*3)];
-target.appendChild(img);
-
-target.style.position="absolute";
-target.style.left=Math.random()*250+"px";
-target.style.top=Math.random()*200+"px";
-
-img.onclick=()=>{
-score++;
-document.getElementById("score").innerText=score;
-spawnTarget();
 };
 
-setTimeout(spawnTarget,800);
-}
-spawnTarget();
-
-/* 💥 INSANE HEART MODE */
-let heartCount=0;
-
-function aisyahMode(){
-
-document.getElementById("heartSound").play();
-
-if(heartCount===0){
-const big=document.createElement("div");
-big.className="bigHeart";
-big.innerText="❤️";
-document.body.appendChild(big);
-setTimeout(()=>big.remove(),1000);
+grid.appendChild(card);
+});
 }
 
-/* more hearts each click */
-for(let i=0;i<20+(heartCount*10);i++){
-const h=document.createElement("div");
-h.innerText="❤️";
-h.style.position="fixed";
-h.style.left=Math.random()*100+"vw";
-h.style.top=Math.random()*100+"vh";
-h.style.fontSize=(20+Math.random()*30)+"px";
-h.style.opacity="0.8";
-document.body.appendChild(h);
-setTimeout(()=>h.remove(),2000);
+/* SPEED */
+let clicks=0, playing=false;
+function startSpeed(){
+clicks=0; playing=true;
+setTimeout(()=>{playing=false; alert("Score: "+clicks);},3000);
 }
+document.addEventListener("click",()=>{if(playing)clicks++;});
 
-heartCount++;
-}
-
-/* floating hearts background */
-setInterval(()=>{
-const h=document.createElement("div");
-h.className="float-heart";
-h.innerText="❤️";
-h.style.left=Math.random()*100+"vw";
-document.body.appendChild(h);
-setTimeout(()=>h.remove(),6000);
-},400);
-
-function closeLetter(){
-document.getElementById("letterBox").style.display="none";
-}
-
+/* NO BUTTON */
+let noSpeed=1;
 function moveNo(){
-  const btn = document.getElementById("noBtn");
-
-  const x = Math.random() * window.innerWidth;
-  const y = Math.random() * window.innerHeight;
-
-  btn.style.position = "fixed";
-  btn.style.left = x + "px";
-  btn.style.top = y + "px";
+const btn=document.getElementById("noBtn");
+btn.style.position="fixed";
+btn.style.left=Math.random()*window.innerWidth+"px";
+btn.style.top=Math.random()*window.innerHeight+"px";
+btn.style.transform=`scale(${1-noSpeed*0.1})`;
+noSpeed++;
 }
 
+/* YES */
 function yesClicked(){
-  alert("I knew it 😏❤️");
+document.body.innerHTML="<h1 style='color:white;text-align:center;margin-top:40vh;'>I knew it 😏❤️</h1>";
 }
+
+/* CURSOR TRAIL */
+document.addEventListener("mousemove",e=>{
+const dot=document.createElement("div");
+dot.style.position="fixed";
+dot.style.left=e.clientX+"px";
+dot.style.top=e.clientY+"px";
+dot.style.width="6px";
+dot.style.height="6px";
+dot.style.background="#ff4d6d";
+dot.style.borderRadius="50%";
+document.body.appendChild(dot);
+setTimeout(()=>dot.remove(),300);
+});
+
+/* CLICK BURST */
+document.addEventListener("click",e=>{
+for(let i=0;i<15;i++){
+const p=document.createElement("div");
+p.innerText="💖";
+p.style.position="fixed";
+p.style.left=e.clientX+"px";
+p.style.top=e.clientY+"px";
+document.body.appendChild(p);
+
+const x=(Math.random()-0.5)*200;
+const y=(Math.random()-0.5)*200;
+
+p.animate([
+{transform:"translate(0,0)",opacity:1},
+{transform:`translate(${x}px,${y}px)`,opacity:0}
+],{duration:700});
+
+setTimeout(()=>p.remove(),700);
+}
+});
 
 </script>
 
-<!-- 💌 LETTER POPUP -->
-<div id="letterBox" style="
-display:none;
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-width:300px;
-background:white;
-padding:20px;
-border-radius:20px;
-box-shadow:0 10px 30px rgba(0,0,0,0.4);
-z-index:9999;
-text-align:center;
-">
-
-<h3 style="color:#ff4d6d;">For You 💖</h3>
-
-<p id="letterContent" style="margin-top:10px;color:#333;"></p>
-
-<br>
-<button onclick="closeLetter()"> Close 🤍</button>
-
-</div>
 </body>
 </html>
